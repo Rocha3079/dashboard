@@ -9,7 +9,7 @@ def format_percentage(val):
 
 # Carregar os dados
 try:
-    df = pd.read_excel(r"C:\Users\lucas.fachi\Desktop\NICOLAS - GC\PYTHON\base_teste.xlsx")
+    df = pd.read_excel(base_teste.xlsx)
     # Identifica as colunas que contêm porcentagens
     percentage_cols = [col for col in df.columns if '%' in col]
 
