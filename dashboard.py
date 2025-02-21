@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+import plotly.express as px
 
 # Função para formatar porcentagem
 def format_percentage(val):
@@ -9,7 +9,7 @@ def format_percentage(val):
 
 # Carregar os dados
 try:
-    df = pd.read_excel('base_teste.xlsx')
+    df = pd.read_excel(r"C:\Users\lucas.fachi\Desktop\NICOLAS - GC\PYTHON\base_teste.xlsx")
     # Identifica as colunas que contêm porcentagens
     percentage_cols = [col for col in df.columns if '%' in col]
 
@@ -32,13 +32,13 @@ if page == "Base de dados 🗂️":
     st.write("Filial de Bento Gonçalves")
 
     if 'Nível 1' in df.columns:
-        options = st.multiselect(
-            "Selecione as categorias",
+        options_nivel1 = st.multiselect(
+            "Selecione as categorias (Nível 1)",
             df['Nível 1'].unique(),
         )
-        if options:
-            filtered_df = df[df['Nível 1'].isin(options)]  # Faz a filtragem
-            st.write("Você selecionou", len(options), "categorias")
+        if options_nivel1:
+            filtered_df = df[df['Nível 1'].isin(options_nivel1)]  # Faz a filtragem
+            st.write("Você selecionou", len(options_nivel1), "categorias")
             st.dataframe(filtered_df, use_container_width=True)
         else:
             st.write("Nenhuma categoria selecionada")
@@ -54,16 +54,47 @@ elif page == "Gráficos 📊":
     st.markdown("Gráficos 📊")
 
     if 'Nível 1' in df.columns:
-        options = st.multiselect(
-            "Selecione as categorias",
+        options_nivel1 = st.multiselect(
+            "Selecione as categorias (Nível 1)",
             df['Nível 1'].unique(),
         )
-        if options:
-            filtered_df = df[df['Nível 1'].isin(options)]  # Faz a filtragem
-            st.write("Você selecionou", len(options), "categorias")
-            st.dataframe(filtered_df, use_container_width=True)
+        if options_nivel1:
+            filtered_df = df[df['Nível 1'].isin(options_nivel1)]  # Faz a filtragem
+            if 'Nível 3' in filtered_df.columns:
+                options_nivel3 = st.multiselect(
+                    "Selecione as subcategorias (Nível 3)",
+                    filtered_df['Nível 3'].unique(),
+                )
+                if options_nivel3:
+                    filtered_df = filtered_df[filtered_df['Nível 3'].isin(options_nivel3)]  # Faz a filtragem
+                    st.write("Você selecionou", len(options_nivel1), "categorias e", len(options_nivel3), "subcategorias")
+                    
+                    # Selecionar a coluna para análise
+                    column = st.selectbox("Selecione a coluna para análise", filtered_df.columns)
+                    
+                    if column in filtered_df.columns:
+                        # Exemplo de gráfico de barras usando plotly
+                        st.subheader("Gráfico de Barras")
+                        fig = px.bar(filtered_df, x='Nível 1', y=column, color='Nível 3', title=f"Gráfico de Barras - {column}", barmode='group')
+                        st.plotly_chart(fig)
+                        
+                        # Exemplo de gráfico de linha usando plotly
+                        st.subheader("Gráfico de Linha")
+                        fig = px.line(filtered_df, x='Nível 1', y=column, color='Nível 3', title=f"Gráfico de Linha - {column}")
+                        st.plotly_chart(fig)
+                        
+                        # Exemplo de gráfico de dispersão usando plotly
+                        st.subheader("Gráfico de Dispersão")
+                        fig = px.scatter(filtered_df, x='Nível 1', y=column, color='Nível 3', title=f"Gráfico de Dispersão - {column}")
+                        st.plotly_chart(fig)
+                    else:
+                        st.write(f"A coluna '{column}' não existe no DataFrame.")
+                else:
+                    st.write("Nenhuma subcategoria selecionada")
+            else:
+                st.write("A coluna 'Nível 3' não existe no DataFrame.")
         else:
             st.write("Nenhuma categoria selecionada")
-            st.dataframe(df, use_container_width=True)
     else:
         st.write("A coluna 'Nível 1' não existe no DataFrame.")
+
