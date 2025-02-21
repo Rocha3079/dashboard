@@ -9,7 +9,7 @@ def format_percentage(val):
 
 # Carregar os dados
 try:
-    df = pd.read_excel('base_teste.xlsx')
+    df = pd.read_excel(r"C:\Users\lucas.fachi\Desktop\NICOLAS - GC\PYTHON\base_teste.xlsx")
     # Identifica as colunas que contêm porcentagens
     percentage_cols = [col for col in df.columns if '%' in col]
 
@@ -78,14 +78,14 @@ elif page == "Gráficos 📊":
                         fig = px.bar(filtered_df, x='Nível 1', y=column, color='Nível 3', title=f"Gráfico de Barras - {column}", barmode='group')
                         st.plotly_chart(fig)
                         
-                        # Exemplo de gráfico de linha usando plotly
-                        st.subheader("Gráfico de Linha")
-                        fig = px.line(filtered_df, x='Nível 1', y=column, color='Nível 3', title=f"Gráfico de Linha - {column}")
+                        # Exemplo de gráfico de pizza usando plotly
+                        st.subheader("Gráfico de Pizza")
+                        fig = px.pie(filtered_df, names='Nível 3',values=column, title=f"Gráfico de Pizza - {column}")
                         st.plotly_chart(fig)
                         
-                        # Exemplo de gráfico de dispersão usando plotly
-                        st.subheader("Gráfico de Dispersão")
-                        fig = px.scatter(filtered_df, x='Nível 1', y=column, color='Nível 3', title=f"Gráfico de Dispersão - {column}")
+                        # Exemplo de gráfico de área usando plotly
+                        st.subheader("Gráfico de Área")
+                        fig = px.area(filtered_df, x='Nível 3', y=column, color='Nível 3', title=f"Gráfico de Área - {column}")
                         st.plotly_chart(fig)
                     else:
                         st.write(f"A coluna '{column}' não existe no DataFrame.")
@@ -97,4 +97,5 @@ elif page == "Gráficos 📊":
             st.write("Nenhuma categoria selecionada")
     else:
         st.write("A coluna 'Nível 1' não existe no DataFrame.")
+
 
